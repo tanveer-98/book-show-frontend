@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "noUncheckedSideEffectImports": false,
+    "jsx": "react-jsx"
+  }
+}
