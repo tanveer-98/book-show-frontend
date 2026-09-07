@@ -8,10 +8,25 @@ interface MovieCardProps {
   id: number;
   duration_in_minutes: number;
   name: string;
-  release_date: Date;
+  release_date: string | Date;
   thumbnail: string;
   genres: Set<IGenre>;
 }
+
+function formatReleaseDate(moviedate: string | Date) {
+  const date = new Date(moviedate);
+
+  console.log("moviedate", moviedate);
+
+  const formattedDate = date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+
+  return formattedDate;
+}
+
 export function MovieCard({
   id,
   duration_in_minutes,
@@ -20,22 +35,32 @@ export function MovieCard({
   thumbnail,
   genres,
 }: MovieCardProps) {
-  console.log(id);
-  console.log(name);
-  console.log(thumbnail);
-  console.log(genres);
-  console.log("");
+  console.log("details");
+  console.log(id, duration_in_minutes, name, release_date, thumbnail);
+
   return (
-    <div className="movie-card">
-      <img src={thumbnail} alt={name} />
+    <article className="movie-card">
+      <div className="movie-card__poster-wrap">
+        <img src={thumbnail} alt={name} />
+        <div className="movie-card__poster-overlay" />
+      </div>
 
-      <h3>{name}</h3>
+      <div className="movie-card__content">
+        <h3>{name}</h3>
 
-      <p>
-        {Array.from(genres)
-          .map((genre) => genre.name)
-          .join(", ")}
-      </p>
-    </div>
+        <div className="movie-card__genres">
+          {Array.from(genres).map((genre) => (
+            <span key={genre.id} className="genre_tag">
+              {genre.name}
+            </span>
+          ))}
+        </div>
+
+        <div className="movie-card__metadata">
+          <span>{duration_in_minutes} min</span>
+          <span>{formatReleaseDate(release_date)}</span>
+        </div>
+      </div>
+    </article>
   );
 }

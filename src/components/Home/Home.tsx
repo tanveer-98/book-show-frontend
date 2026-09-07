@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import CitySearchBox from "../CitySearchBox/CitySearchBox";
 import { MovieCard } from "../MovieCard/MovieCard";
 import "./style.css";
-
+import { Footer } from "../../Layout/Footer";
+import { Link } from "react-router-dom";
 function Home() {
   const [movies, setMovies] = useState([]);
 
@@ -12,6 +13,7 @@ function Home() {
       .then((data) => {
         console.log("movies set successfully");
         console.log(data);
+
         setMovies(data);
       });
   }, []);
@@ -19,25 +21,6 @@ function Home() {
   return (
     <div className="home">
       {/* Navbar */}
-      <nav className="navbar">
-        <div className="logo">
-          Book<span>My</span>Show
-        </div>
-
-        <div className="nav-links">
-          <a href="#">Movies</a>
-          <a href="#">Events</a>
-          <a href="#">Sports</a>
-          <a href="#">Plays</a>
-        </div>
-
-        <div className="nav-right">
-          <button className="search-button">🔍</button>
-
-          <button className="login-button">Sign In</button>
-        </div>
-      </nav>
-
       {/* Hero */}
       <section className="hero">
         <div className="hero-content">
@@ -66,22 +49,23 @@ function Home() {
       <section className="movies-section">
         <div className="section-header">
           <h2>Recommended Movies</h2>
-          <button>See All →</button>
+          <Link to="/movies">
+            <button>See All →</button>
+          </Link>
         </div>
 
         <div className="movie-grid">
           {movies &&
             movies.map((movie: any) => {
-
-              console.log("movie genre")
-              console.log(movie.genres)
+              console.log("movie genre");
+              console.log(movie.genres);
               return (
                 <MovieCard
                   key={movie.id}
                   id={movie.id}
-                  duration_in_minutes={movie.duration_in_minutes}
+                  duration_in_minutes={movie.durationInMinutes}
                   name={movie.name}
-                  release_date={new Date(movie.release_date)}
+                  release_date={movie.releaseDate}
                   thumbnail={movie.thumbnailUrl}
                   genres={movie.genres}
                 />

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import "./style.css";
+import { useNavigate, useNavigation } from "react-router-dom";
+import { nav } from "framer-motion/client";
 
 interface ICity {
   id: number;
@@ -11,6 +13,8 @@ function CitySearchBox() {
   const [search, setSearch] = useState("");
   const [selectedCity, setSelectedCity] = useState<ICity | null>(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetch("http://localhost:8080/api/cities")
       .then((response) => response.json())
@@ -19,8 +23,12 @@ function CitySearchBox() {
 
         setCities(data);
       })
-      .catch((error) => console.error("Error fetching cities:", error));
+      .catch((error) => console.error("Err  or fetching cities:", error));
   }, []);
+
+  const navigateShows = () => {
+    navigate(`/showMovies/${selectedCity?.id}`);
+  };
 
   const filteredCities = cities.filter((city) =>
     city.name.toLowerCase().includes(search.toLowerCase()),
@@ -41,7 +49,7 @@ function CitySearchBox() {
         type="button"
         className="city-search-button"
         aria-label="Search"
-        onClick={() => {}}
+        onClick={() => navigateShows()}
       >
         &rarr;
       </button>

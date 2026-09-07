@@ -1,0 +1,176 @@
+.shows-section {
+  min-height: 70vh;
+  padding: 48px clamp(20px, 6vw, 88px) 72px;
+  background: #f8fafc;
+  overflow-y: scroll;
+}
+
+.shows-header {
+  max-width: 720px;
+  margin-bottom: 32px;
+}
+
+.shows-eyebrow {
+  margin: 0 0 8px;
+  color: #e11d48;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.shows-header h1 {
+  margin: 0;
+  color: #172033;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.05;
+}
+
+.shows-header > p:last-child {
+  margin: 12px 0 0;
+  color: #64748b;
+}
+
+.shows-filter {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px 18px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.shows-filter label {
+  display: block;
+  color: #172033;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.shows-filter__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.shows-filter input {
+  min-height: 40px;
+  padding: 8px 10px;
+  color: #172033;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  font: inherit;
+}
+
+.shows-filter__clear {
+  padding: 9px 12px;
+  color: #be123c;
+  background: transparent;
+  border: 1px solid #fda4af;
+  border-radius: 7px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.shows-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.show-card {
+  display: flex;
+  overflow: hidden;
+  min-height: 180px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.show-card__poster {
+  width: 112px;
+  min-height: 180px;
+  object-fit: cover;
+  background: #172033;
+}
+
+.show-card__poster--empty {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  color: #fb7185;
+  font-size: 3rem;
+  font-weight: 800;
+}
+
+.show-card__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.show-card h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 1.15rem;
+}
+
+.show-card__theatre {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.show-card__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 18px;
+  color: #334155;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.show-card__button {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 9px 14px;
+  color: #fff;
+  background: #e11d48;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.shows-empty {
+  padding: 36px 0;
+  color: #64748b;
+}
+
+@media (max-width: 480px) {
+  .shows-filter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .shows-filter__controls {
+    justify-content: space-between;
+  }
+
+  .show-card__poster {
+    width: 92px;
+  }
+
+  .show-card__content {
+    padding: 16px;
+  }
+}
