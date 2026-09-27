@@ -9,7 +9,12 @@ import ErrorPage from "./components/ErrorPage.jsx";
 import Movies, { moviesLoader } from "./components/Movies/Movies.tsx";
 import Movie from "./components/Movie/Movie.tsx";
 import Shows, { showsLoader } from "./components/Shows/Shows.tsx";
-import ShowMovies , {showMoviesLoader } from './components/ShowMovies/ShowMovies.tsx'
+import BookShowSeat, {
+  showSeatsLoader,
+} from "./components/BookShowSeat/BookShowSeat.tsx";
+import ShowMovies, {
+  showMoviesLoader,
+} from "./components/ShowMovies/ShowMovies.tsx";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -24,8 +29,21 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/home" element={<Home />} />
     <Route path="/movies" element={<Movies />} loader={moviesLoader} />
     <Route path="/movies/:movieId" element={<Movie />} />
-    <Route path="/movies/:movieId/shows/:cityId" element={<Shows />} loader={showsLoader} />
-    <Route path="/showMovies/:cityId" element={<ShowMovies />} loader = {showMoviesLoader}/>
+    <Route
+      path="/movies/:movieId/shows/:cityId"
+      element={<Shows />}
+      loader={showsLoader}
+    />
+    <Route
+      path="/showMovies/:cityId"
+      element={<ShowMovies />}
+      loader={showMoviesLoader}
+    />
+    <Route
+      path="/shows/:showId/seats"
+      element={<BookShowSeat />}
+      loader={showSeatsLoader}
+    />
   </Route>,
 );
 

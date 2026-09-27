@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { apiClient } from "../../api/apiClient";
 import "./styles.css";
 
@@ -19,13 +19,14 @@ interface Show {
 const Shows = () => {
   const shows = useLoaderData() as Show[];
   const [selectedDate, setSelectedDate] = useState("");
-
+  const navigate = useNavigate();
   const filteredShows = selectedDate
     ? shows.filter((show) => show.showDate?.slice(0, 10) === selectedDate)
     : shows;
 
   const handleBookTicket = (showId: number) => {
     console.log("SHOW ID ", showId);
+    navigate(`/shows/${showId}/seats`);
   };
 
   return (

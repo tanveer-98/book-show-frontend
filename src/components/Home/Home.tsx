@@ -25,7 +25,8 @@ function Home() {
       <section className="hero">
         <div className="hero-content">
           <p className="hero-small-text">
-            MOVIES • EVENTS • SPORTS • EXPERIENCES
+            MOVIES
+             {/* • EVENTS • SPORTS • EXPERIENCES */}
           </p>
 
           <h1>
