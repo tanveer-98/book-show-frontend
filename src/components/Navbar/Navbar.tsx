@@ -2,10 +2,14 @@ import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import SignInModal from "../SignIn/SignIn";
 import "./styles.css";
+import SignUpModal from "../SignUp/SignUp";
+import { useAuth } from "../../Context/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const {isAuthenticated , logout} = useAuth();
   const [showSignInModal, setSignInModalShow] = useState<boolean>(false);
+  const [showSignUpModal, setSignUpModalShow] = useState<boolean>(false);
 
   const redirectHome = () => {
     navigate("/home");
@@ -30,22 +34,45 @@ const Navbar = () => {
         </div>
 
         <div className="nav-right">
-          <button className="search-button">🔍</button>
+          {
+           !isAuthenticated ?  
+              <button
+                className="login-button"
+                onClick={() => setSignInModalShow(!showSignInModal)}
+              >
+                Sign In
+              </button>
+            :
+            <button className="login-button" onClick ={()=>logout()}>Logout</button>
+          }
 
-          <button
-            className="login-button"
-            onClick={() => setSignInModalShow(!showSignInModal)}
-          >
-            Sign In
-          </button>
         </div>
       </nav>
 
+      {/* Signin MOdal */}
       <div
         className={`${showSignInModal ? "block" : "hidden"} h-screen w-screen`}
       >
-        <SignInModal onClose={() => setSignInModalShow(false)} />
+        <SignInModal
+          onClose={() => setSignInModalShow(false)}
+          onSignUp={() => {
+            setSignUpModalShow(true);
+            setSignInModalShow(false);
+          }}
+        />
       </div>
+
+      {/* Sign Up Modal */}
+
+      {showSignUpModal && (
+        <SignUpModal
+          onClose={() => setSignUpModalShow(false)}
+          onSignIn={() => {
+            setSignUpModalShow(false);
+            setSignInModalShow(true);
+          }}
+        />
+      )}
     </React.Fragment>
   );
 };

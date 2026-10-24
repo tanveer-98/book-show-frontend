@@ -2,7 +2,10 @@ import { useMemo, useState } from "react";
 import "./styles.css";
 import { apiClient } from "../../api/apiClient";
 
-import { useLoaderData, useParams } from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useAuth } from "../../Context/AuthContext";
+import PaymentTimer from "../PaymentTimer/PaymentTimer";
 
 type SeatType = "SILVER" | "GOLD" | "PLATINUM";
 
@@ -21,19 +24,19 @@ interface Seat {
 const seatRows: SeatRow[] = [
   ...Array.from({ length: 4 }, (_, index) => ({
     label: `${String.fromCharCode(65 + index)}`,
-    type: "silver" as const,
+    type: "SILVER" as const,
     price: 300,
   })),
 
   ...Array.from({ length: 3 }, (_, index) => ({
     label: String.fromCharCode(69 + index),
-    type: "gold" as const,
+    type: "GOLD" as const,
     price: 350,
   })),
 
   ...Array.from({ length: 3 }, (_, index) => ({
     label: String.fromCharCode(72 + index),
-    type: "platinum" as const,
+    type: "PLATINUM" as const,
     price: 700,
   })),
 ];
@@ -52,18 +55,22 @@ interface ShowSeat {
   seatNumber: string;
   seatType: string;
   price: number;
+  status: String; // AVAILABLE ,LOCKED , BOOKED
 }
 
 const BookShowSeat = () => {
-  console.log("seats ");
-  console.log(seats);
+  const navigate = useNavigate();
+  // console.log("seats ");
 
-  console.log("SEAT ROWS: ");
-  console.log(seatRows);
+  const { isAuthenticated } = useAuth();
+  // console.log(seats);
+
+  // console.log("SEAT ROWS: ");
+  // console.log(seatRows);
   const showseats: ShowSeat[] = useLoaderData();
 
-  console.log("show seats : ");
-  console.log(showseats);
+  // console.log("show seats : ");
+  // console.log(showseats);
 
   const seats2 = showseats.map((showseat: ShowSeat) => {
     const seatRow = {
@@ -75,12 +82,13 @@ const BookShowSeat = () => {
       id: showseat.rowNumber + "-" + showseat.seatNumber,
       number: showseat.seatNumber,
       row: seatRow,
+      status: showseat.status,
     };
     return seat;
   });
 
-  console.log("seats2");
-  console.log(seats2);
+  // console.log("seats2");
+  // console.log(seats2);
 
   const { showId } = useParams<{ showId: string }>();
   const [selectedSeatIds, setSelectedSeatIds] = useState<string[]>([]);
@@ -110,10 +118,47 @@ const BookShowSeat = () => {
         ? currentSeats.filter((currentSeatId) => currentSeatId !== seatId)
         : [...currentSeats, seatId],
     );
-    console.log("selected seat Id : ");
-    console.log(selectedSeatIds);
   };
 
+  const handlePaymentService = async () => {
+    if (!isAuthenticated) {
+      toast.error("User Needs to Login");
+      return;
+    }
+    // call the backend to lock the seats :
+
+    console.log("LOCKING THESE SEATS : ");
+    console.log(selectedSeatIds);
+
+    console.log("selected seat Id : ");
+    // console.log(selectedSeats);
+    const selectedShowSeatIdList = selectedSeats.map((seat) => seat.id);
+    console.log(selectedShowSeatIdList);
+
+    const response = await apiClient.post(
+      "/booking/book",
+      selectedShowSeatIdList,
+      {
+        withCredentials: true,
+      },
+    );
+
+    console.log("BOOKING RESPONSE :");
+    console.log(response.data);
+
+    navigate(`/booking/${response.data.bookingId}/BookingDetails`, {
+      state: {
+        showId,
+        seats: selectedSeats.map((seat) => ({
+          id: seat.id,
+          rowNumber: seat.rowNumber,
+          seatNumber: seat.seatNumber,
+          seatType: seat.seatType,
+          price: seat.price,
+        })),
+      },
+    });
+  };
   return (
     <main className="seat-page">
       <header className="seat-page__header">
@@ -142,7 +187,8 @@ const BookShowSeat = () => {
                       const isSelected = selectedSeatIds.includes(seat.id);
                       return (
                         <button
-                          className={`seat seat--${seat.row.type} ${isSelected ? "seat--selected" : ""}`}
+                          disabled={seat.status === "LOCKED"}
+                          className={`seat seat--${seat.row.type} ${isSelected ? "seat--selected" : ""} disabled:transform-none! disabled:cursor-not-allowed! disabled:bg-gray-300! disabled:opacity-40! disabled:transition-none! disabled:outline-none!`}
                           key={seat.id}
                           type="button"
                           aria-label={`${row.type} row ${row.label}, seat ${seat.number}, ${row.price} rupees`}
@@ -208,6 +254,7 @@ const BookShowSeat = () => {
             className="booking-summary__button"
             type="button"
             disabled={selectedSeats.length === 0}
+            onClick={() => handlePaymentService()}
           >
             Continue to payment
           </button>
@@ -224,6 +271,26 @@ export async function showSeatsLoader({
 }: {
   params: { showId?: string };
 }) {
+  if (!params.showId) {
+    throw new Response("Show Id is required", { status: 400 });
+  }
+
+  try {
+    const response = await apiClient.get(`/showseat/shows/${params.showId}`);
+    return Array.isArray(response.data)
+      ? response.data
+      : response.data.shows || [];
+  } catch (error: any) {
+    throw new Response(
+      error.response?.data?.errorMessage ||
+        error.message ||
+        "Failed to fetch shows.",
+      { status: error.response?.status || 500 },
+    );
+  }
+}
+
+async function lockSeats({ params }: { params: { showId?: string } }) {
   if (!params.showId) {
     throw new Response("Show Id is required", { status: 400 });
   }

@@ -9,6 +9,8 @@ import ErrorPage from "./components/ErrorPage.jsx";
 import Movies, { moviesLoader } from "./components/Movies/Movies.tsx";
 import Movie from "./components/Movie/Movie.tsx";
 import Shows, { showsLoader } from "./components/Shows/Shows.tsx";
+import Payment from "./components/Payment/Payment.tsx";
+
 import BookShowSeat, {
   showSeatsLoader,
 } from "./components/BookShowSeat/BookShowSeat.tsx";
@@ -21,6 +23,7 @@ import {
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
+import { AuthProvider } from "./Context/AuthContext.tsx";
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<App />} errorElement={<ErrorPage />}>
@@ -44,6 +47,11 @@ const routeDefinitions = createRoutesFromElements(
       element={<BookShowSeat />}
       loader={showSeatsLoader}
     />
+    <Route
+      path="/booking/:bookingId/BookingDetails"
+      element={<Payment />}
+      
+    />
   </Route>,
 );
 
@@ -51,16 +59,20 @@ const appRouter = createBrowserRouter(routeDefinitions);
 
 createRoot(document.getElementById("root")).render(
   <>
-    <RouterProvider router={appRouter} />
-    <ToastContainer
-      position="top-center"
-      autoClose={3000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      draggable
-      pauseOnHover
-      theme={localStorage.getItem("theme") === "dark" ? "dark" : "light"}
-      transition={Bounce}
-    />
+    <AuthProvider>
+      <>
+        <RouterProvider router={appRouter} />
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          draggable
+          pauseOnHover
+          theme={localStorage.getItem("theme") === "dark" ? "dark" : "light"}
+          transition={Bounce}
+        />
+      </>
+    </AuthProvider>
   </>,
 );
